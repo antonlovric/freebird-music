@@ -53,8 +53,7 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $post = Post::find($id);
-        $post->update($request->all());
+        $post = Post::where("id", $id)->update($request->all());
         return $post;
     }
 
