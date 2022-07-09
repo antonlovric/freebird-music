@@ -27,6 +27,8 @@ Route::post("/auth/register", [ControllersAuthController::class, "register"]);
 Route::post("/auth/login", [ControllersAuthController::class, "login"]);
 Route::get("/posts", [PostController::class, "index"]);
 Route::get("/posts/{id}", [PostController::class, "show"]);
+Route::get("/posts/{authorID}", [PostController::class, "searchAuthor"]);
+Route::get("/posts/{title}", [PostController::class, "searchTitle"]);
 
 
 

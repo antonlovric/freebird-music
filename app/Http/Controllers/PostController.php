@@ -13,9 +13,10 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Post::all();
+        $pageSize = $request->page_size ?? 10;
+        return Post::query()->paginate($pageSize);
     }
 
     /**
@@ -74,8 +75,18 @@ class PostController extends Controller
      * @param  string  $title
      * @return \Illuminate\Http\Response
      */
-    public function search($heading)
+    public function searchTitle($heading)
     {
         return Post::where("heading", "like", "%" . $heading . "%")->get();
+    }
+    /**
+     * Search for a post author.
+     *
+     * @param  string  $title
+     * @return \Illuminate\Http\Response
+     */
+    public function searchUser($user)
+    {
+        return Post::where("user", "like", "%" . $user . "%")->get();
     }
 }
