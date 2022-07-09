@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\AuthController as ControllersAuthController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\TagController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -35,9 +37,18 @@ Route::get("/posts/{title}", [PostController::class, "searchTitle"]);
 //Protected routes
 Route::group(["middleware" => ["auth:sanctum"]], function () {
     Route::post("/auth/logout", [ControllersAuthController::class, "logout"]);
+    // Posts
     Route::post("/posts", [PostController::class, "store"]);
     Route::put("/posts/{id}", [PostController::class, "update"]);
     Route::delete("/posts/{id}", [PostController::class, "destroy"]);
+    // Images
+    Route::post("/images", [ImageController::class, "store"]);
+    Route::put("/images/{id}", [ImageController::class, "update"]);
+    Route::delete("/images/{id}", [ImageController::class, "destroy"]);
+    // Tags
+    Route::post("/tags", [TagController::class, "store"]);
+    Route::put("/tags/{id}", [TagController::class, "update"]);
+    Route::delete("/tags/{id}", [TagController::class, "destroy"]);
     Route::post("/logout", [AuthController::class, "logout"]);
 });
 
