@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -47,9 +48,11 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        $string_or_boolean_rule = is_string($request->input("remember_me", false)) ? 'string' : 'boolean';
         $fields = $request->validate([
             "email" => "required|string",
             "password" => "required|string",
+            "remember_me" => "{$string_or_boolean_rule}"
         ]);
 
         $user = User::where("email", $fields["email"])->first();
@@ -59,6 +62,11 @@ class AuthController extends Controller
         }
 
         $token = $user->createToken("myapptoken")->plainTextToken;
+        $remember = filter_var($request->input("remember_me", false), FILTER_VALIDATE_BOOLEAN);
+
+        if (!Auth::attempt(["email" => $fields["email"], "password" => $fields["password"]], $remember)) {
+            return response(["message" => "Login failed, please try again later"], 422);
+        }
 
         $response = [
             "user" => $user,
