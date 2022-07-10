@@ -85,7 +85,7 @@ class PostController extends Controller
      * @param  string  $title
      * @return \Illuminate\Http\Response
      */
-    public function searchUser($user)
+    public function searchAuthor($user)
     {
         return Post::where("user", "like", "%" . $user . "%")->get();
     }

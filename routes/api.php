@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\AuthController as ControllersAuthController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductTypeController;
 use App\Http\Controllers\TagController;
 use Illuminate\Http\Request;
@@ -30,8 +31,15 @@ Route::post("/auth/register", [ControllersAuthController::class, "register"]);
 Route::post("/auth/login", [ControllersAuthController::class, "login"]);
 Route::get("/posts", [PostController::class, "index"]);
 Route::get("/posts/{id}", [PostController::class, "show"]);
-Route::get("/posts/{authorID}", [PostController::class, "searchAuthor"]);
-Route::get("/posts/{title}", [PostController::class, "searchTitle"]);
+Route::get("/posts/search/{authorID}", [PostController::class, "searchAuthor"]);
+
+Route::controller(ProductController::class)->group(function () {
+    Route::get("/products", "index");
+    Route::get("/products/{id}", "show");
+    Route::put("/products/rate/{id}", "rateProduct");
+    Route::get("/products/search/{title}", "searchTitle");
+    Route::get("/products/filter/{minRating}{maxRating}", "searchTitle");
+});
 
 
 
@@ -59,8 +67,14 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
     Route::put("/productTypes/{id}", [ProductTypeController::class, "update"]);
     Route::delete("/productTypes/{id}", [ProductTypeController::class, "destroy"]);
 
+    // Products
+    Route::post("/products", [ProductTypeController::class, "store"]);
+    Route::put("/products/rateProduct/{id}", [ProductTypeController::class, "rateProduct"]);
+    Route::put("/products/{id}", [ProductTypeController::class, "update"]);
+    Route::delete("/products/{id}", [ProductTypeController::class, "destroy"]);
 
-    Route::post("/logout", [AuthController::class, "logout"]);
+
+    Route::post("/logout", [ControllersAuthController::class, "logout"]);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
