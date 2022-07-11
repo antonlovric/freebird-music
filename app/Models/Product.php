@@ -24,4 +24,14 @@ class Product extends Model
         'product_type',
         'number_of_ratings',
     ];
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, "product_tags");
+    }
+
+    public function genres()
+    {
+        return $this->belongsToMany(Genre::class, "product_genres");
+    }
 }
