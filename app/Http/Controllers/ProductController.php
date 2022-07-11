@@ -93,9 +93,7 @@ class ProductController extends Controller
     public function filterRating($minRating, $maxRating, Request $request)
     {
         $pageSize = $request->page_size ?? 10;
-        return Product::where("rating", ">=", $minRating)
-            ->where("rating", "<=", $maxRating)
-            ->paginate($pageSize);
+        return Product::where([["rating", ">=", $minRating], ["rating", "<=", $maxRating]])->paginate($pageSize);
     }
 
     /**
