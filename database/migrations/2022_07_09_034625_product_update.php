@@ -14,13 +14,6 @@ return new class extends Migration
     public function up()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->string("title", 50);
-            $table->string("description", 150);
-            $table->string("sku", 50);
-            $table->integer("price");
-            $table->decimal("rating", 6, 2);
-            $table->integer("number_of_ratings");
-            $table->foreignId("product_type")->constrained()->onDelete("cascade");
         });
     }
 

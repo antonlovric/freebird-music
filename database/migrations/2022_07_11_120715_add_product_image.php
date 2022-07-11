@@ -13,13 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('posts', function (Blueprint $table) {
-            $table->id();
-            $table->string("heading", 50);
-            $table->string("subheading", 40);
-            $table->string("body", 350);
-            $table->foreignId("user_id")->constrained()->onDelete("cascade");
-            $table->timestamps();
+        Schema::table('images', function (Blueprint $table) {
+            $table->foreignId("product_id")->constrained("products")->onDelete("cascade");
+            $table->boolean("is_display");
         });
     }
 
@@ -30,6 +26,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('posts');
+        Schema::table('images', function (Blueprint $table) {
+            //
+        });
     }
 };

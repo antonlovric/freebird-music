@@ -21,7 +21,7 @@ class Product extends Model
         'sku',
         'price',
         'rating',
-        'product_type',
+        'product_type_id',
         'number_of_ratings',
     ];
 

@@ -17,6 +17,6 @@ class Post extends Model
         'heading',
         'subheading',
         'body',
-        'user',
+        'user_id',
     ];
 }

@@ -11,4 +11,14 @@ class Condition extends Model
     protected $fillable = [
         'name',
     ];
+
+    public function media_conditions()
+    {
+        return $this->hasMany(Product::class, "media_condition", "id");
+    }
+
+    public function sleeve_conditions()
+    {
+        return $this->hasMany(Product::class, "sleeve_condition", "id");
+    }
 }

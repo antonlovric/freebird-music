@@ -11,4 +11,9 @@ class Image extends Model
     protected $fillable = [
         'path',
     ];
+
+    public function products()
+    {
+        return $this->hasOne(Product::class);
+    }
 }
