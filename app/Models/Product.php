@@ -34,4 +34,19 @@ class Product extends Model
     {
         return $this->belongsToMany(Genre::class, "product_genres");
     }
+
+    public function media_condition()
+    {
+        return $this->belongsTo(Condition::class);
+    }
+
+    public function sleeve_condition()
+    {
+        return $this->belongsTo(Condition::class);
+    }
+
+    public function images()
+    {
+        return $this->hasMany(Image::class);
+    }
 }

@@ -54,4 +54,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return 'remember_token';
     }
+
+    public function user_type()
+    {
+        return $this->belongsTo(UserType::class);
+    }
 }
