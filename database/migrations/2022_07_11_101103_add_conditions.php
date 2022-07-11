@@ -14,7 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->integer("number_of_ratings");
+            $table->foreignId("media_conditon")->constrained("conditions")->onDelete("cascade");
+            $table->foreignId("sleeve_conditon")->constrained("conditions")->onDelete("cascade");
         });
     }
 
