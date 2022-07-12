@@ -13,8 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->foreignId("user_type")->after("password")->constrained("user_types")->onDelete("cascade");
+        Schema::create('order_statuses', function (Blueprint $table) {
+            $table->id();
+            $table->string("name", 30);
+            $table->timestamps();
         });
     }
 
@@ -25,8 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('order_statuses');
     }
 };

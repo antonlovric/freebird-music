@@ -54,4 +54,9 @@ class Product extends Model
     {
         return $this->belongsToMany(Cart::class, "cart_items");
     }
+
+    public function discount()
+    {
+        return $this->belongsTo(Discount::class);
+    }
 }
