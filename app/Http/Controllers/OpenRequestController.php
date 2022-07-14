@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\OpenRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class OpenRequestController extends Controller
 {

@@ -8,7 +8,6 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductTypeController;
 use App\Http\Controllers\TagController;
-use App\Models\OpenRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
