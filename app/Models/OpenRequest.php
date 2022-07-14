@@ -10,7 +10,7 @@ class OpenRequest extends Model
     use HasFactory;
     protected $fillable = [
         'request',
-        'user',
+        'user_id',
     ];
 
     public function user()

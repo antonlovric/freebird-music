@@ -3,10 +3,12 @@
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\AuthController as ControllersAuthController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\OpenRequestController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductTypeController;
 use App\Http\Controllers\TagController;
+use App\Models\OpenRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,11 +29,19 @@ Route::post('/email/verification-notification', function (Request $request) {
     $request->user()->sendEmailVerificationNotification();
     return ["message" => "Email resent."];
 })->name('verification.send');
-Route::post("/auth/register", [ControllersAuthController::class, "register"]);
-Route::post("/auth/login", [ControllersAuthController::class, "login"]);
-Route::get("/posts", [PostController::class, "index"]);
-Route::get("/posts/{id}", [PostController::class, "show"]);
-Route::get("/posts/search/{authorID}", [PostController::class, "searchAuthor"]);
+
+Route::controller(ControllersAuthController::class)->group(function () {
+    Route::post("/auth/register", [ControllersAuthController::class, "register"]);
+    Route::post("/auth/login", [ControllersAuthController::class, "login"]);
+});
+
+Route::controller(PostController::class)->group(function () {
+    Route::get("/posts", "index");
+    Route::get("/posts/{id}", "show");
+    Route::get("/posts/search/{authorID}", "searchAuthor");
+});
+
+
 
 Route::controller(ProductController::class)->group(function () {
     Route::get("/products", "index");
@@ -73,6 +83,14 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
     Route::put("/products/{id}", [ProductTypeController::class, "update"]);
     Route::delete("/products/{id}", [ProductTypeController::class, "destroy"]);
 
+    Route::controller(OpenRequestController::class)->group(function () {
+        Route::get("/openRequest", "index");
+        Route::get("/openRequest/{id}", "show");
+        Route::get("/openRequest/user/{id}", "userRequests");
+        Route::post("/openRequest", "store");
+        Route::put("/openRequest", "update");
+        Route::delete("/openRequest/{id}", "destroy");
+    });
 
     Route::post("/logout", [ControllersAuthController::class, "logout"]);
 });
