@@ -30,8 +30,8 @@ class ProductController extends Controller
             "title" => "required|string",
             "price" => "required|integer",
             "description" => "string",
-            "sleeve_condition" => "string",
-            "media_condition" => "string",
+            "sleeve_condition" => "integer",
+            "media_condition" => "integer",
             "sku" => "string",
             "rating" => "decimal",
         ]);
