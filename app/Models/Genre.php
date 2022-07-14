@@ -14,6 +14,6 @@ class Genre extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class, "product_genres");
+        return $this->hasMany(Product::class);
     }
 }

@@ -30,9 +30,9 @@ class Product extends Model
         return $this->belongsToMany(Tag::class, "product_tags");
     }
 
-    public function genres()
+    public function genre()
     {
-        return $this->belongsToMany(Genre::class, "product_genres");
+        return $this->belongsTo(Genre::class);
     }
 
     public function media_condition()

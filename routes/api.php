@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\AuthController as ControllersAuthController;
+use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\OpenRequestController;
 use App\Http\Controllers\PostController;
@@ -38,6 +39,10 @@ Route::controller(PostController::class)->group(function () {
     Route::get("/posts", "index");
     Route::get("/posts/{id}", "show");
     Route::get("/posts/search/{authorID}", "searchAuthor");
+});
+
+Route::controller(DiscountController::class)->group(function () {
+    Route::get("/discounts", "index");
 });
 
 
@@ -87,6 +92,13 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
         Route::get("/openRequest/{id}", "show");
         Route::get("/openRequest/user/{id}", "userRequests");
         Route::post("/openRequest", "store");
+        Route::put("/openRequest", "update");
+        Route::delete("/openRequest/{id}", "destroy");
+    });
+
+    Route::controller(DiscountController::class)->group(function () {
+        Route::get("/discounts/{id}", "show");
+        Route::post("/discounts", "store");
         Route::put("/openRequest", "update");
         Route::delete("/openRequest/{id}", "destroy");
     });
