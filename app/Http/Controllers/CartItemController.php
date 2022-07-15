@@ -2,21 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
-
+use App\Models\CartItem;
 use Illuminate\Http\Request;
 
-class PostController extends Controller
+class CartItemController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $pageSize = $request->page_size ?? 10;
-        return Post::query()->paginate($pageSize);
+        return CartItem::all();
     }
 
     /**
@@ -28,10 +26,13 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            "heading" => "required",
-            "body" => "required",
+            "cart_id" => "exists:carts,id",
+            "product_id" => "exists:products,id",
+            "order_id" => "sometimes|nullable|exists:orders,id",
+            "quantity" => "integer",
+            "final_price" => "numeric|between:0,100000.99",
         ]);
-        return Post::create($request->all());
+        return CartItem::create($request->all());
     }
 
     /**
@@ -42,7 +43,7 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        return Post::find($id);
+        return CartItem::find($id);
     }
 
     /**
@@ -54,8 +55,7 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $post = Post::where("id", $id)->update($request->all());
-        return $post;
+        return CartItem::where("id", $id)->update($request->all());
     }
 
     /**
@@ -66,27 +66,6 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        return Post::destroy($id);
-    }
-
-    /**
-     * Search for a post title.
-     *
-     * @param  string  $title
-     * @return \Illuminate\Http\Response
-     */
-    public function searchTitle($heading)
-    {
-        return Post::where("heading", "like", "%" . $heading . "%")->get();
-    }
-    /**
-     * Search for a post author.
-     *
-     * @param  string  $title
-     * @return \Illuminate\Http\Response
-     */
-    public function searchAuthor($user)
-    {
-        return Post::where("user_id", "like", "%" . $user . "%")->get();
+        return CartItem::destroy($id);
     }
 }

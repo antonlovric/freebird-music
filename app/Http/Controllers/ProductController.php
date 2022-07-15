@@ -28,13 +28,22 @@ class ProductController extends Controller
     {
         $request->validate([
             "title" => "required|string",
-            "price" => "required|integer",
+            "initial_price" => "required|integer",
             "description" => "string",
-            "sleeve_condition" => "integer",
-            "media_condition" => "integer",
+            "sleeve_condition" => "exists:conditions,id",
+            "media_condition" => "exists:conditions,id",
             "sku" => "string",
             "rating" => "decimal",
+            "product_type" => "exists:product_types,id",
+            "author" => "string",
+            "genre" => "exists:genres",
+            "edition" => "string",
+            "discount" => "sometimes|nullable|exists:discounts",
+            "file" => "required|mimes:png,jpg,jpeg|max:10000"
         ]);
+        if ($request->file('file')) {
+            $request["path"] = $request->file('file')->store('public/images');
+        }
         return Product::create($request->all());
     }
 
@@ -94,6 +103,12 @@ class ProductController extends Controller
     {
         $pageSize = $request->page_size ?? 10;
         return Product::where([["rating", ">=", $minRating], ["rating", "<=", $maxRating]])->paginate($pageSize);
+    }
+
+    public function filterProductType($productType, Request $request)
+    {
+        $pageSize = $request->page_size ?? 10;
+        return Product::where(["product_type_id", "=", $productType])->paginate($pageSize);
     }
 
     /**

@@ -2,12 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Image;
-
+use App\Models\Order;
 use Illuminate\Http\Request;
 
-class ImageController extends Controller
+class OrderController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        $pageSize = $request->page_size ?? 10;
+        return Order::query()->paginate($pageSize);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -17,9 +27,11 @@ class ImageController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            "path" => "required|string",
+            "total" => "numeric|between:0,100000.99",
+            "order_status" => "required|exists:order_status,id",
+            "order_details" => "required|exists:order_details,id",
         ]);
-        return Image::create($request->all());
+        return Order::create($request->all());
     }
 
     /**
@@ -30,7 +42,7 @@ class ImageController extends Controller
      */
     public function show($id)
     {
-        return Image::find($id);
+        return Order::find($id);
     }
 
     /**
@@ -42,7 +54,7 @@ class ImageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return Image::where("id", $id)->update($request->all());
+        return Order::where("id", $id)->update($request->all());
     }
 
     /**
@@ -53,6 +65,6 @@ class ImageController extends Controller
      */
     public function destroy($id)
     {
-        return Image::destroy($id);
+        return Order::destroy($id);
     }
 }

@@ -14,9 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->renameColumn("price", "initial_price");
-            $table->integer("stock");
-            $table->foreignId("discount_id")->nullable->constrained("discounts")->onDelete("cascade");
+            $table->string("image", 300);
         });
     }
 

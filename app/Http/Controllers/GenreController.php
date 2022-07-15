@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
-
+use App\Models\Genre;
 use Illuminate\Http\Request;
 
-class PostController extends Controller
+class GenreController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +15,7 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $pageSize = $request->page_size ?? 10;
-        return Post::query()->paginate($pageSize);
+        return Genre::query()->paginate($pageSize);
     }
 
     /**
@@ -28,10 +27,9 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            "heading" => "required",
-            "body" => "required",
+            "name" => "required|string",
         ]);
-        return Post::create($request->all());
+        return Genre::create($request->all());
     }
 
     /**
@@ -42,7 +40,7 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        return Post::find($id);
+        return Genre::find($id);
     }
 
     /**
@@ -54,7 +52,7 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $post = Post::where("id", $id)->update($request->all());
+        $post = Genre::where("id", $id)->update($request->all());
         return $post;
     }
 
@@ -66,27 +64,6 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        return Post::destroy($id);
-    }
-
-    /**
-     * Search for a post title.
-     *
-     * @param  string  $title
-     * @return \Illuminate\Http\Response
-     */
-    public function searchTitle($heading)
-    {
-        return Post::where("heading", "like", "%" . $heading . "%")->get();
-    }
-    /**
-     * Search for a post author.
-     *
-     * @param  string  $title
-     * @return \Illuminate\Http\Response
-     */
-    public function searchAuthor($user)
-    {
-        return Post::where("user_id", "like", "%" . $user . "%")->get();
+        return Genre::destroy($id);
     }
 }

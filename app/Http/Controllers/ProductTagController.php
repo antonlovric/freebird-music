@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tag;
-
 use Illuminate\Http\Request;
 
-class TagController extends Controller
+class ProductTagController extends Controller
 {
-
-    public function index(Request $request)
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
     {
-        $pageSize = $request->page_size ?? 10;
-        return Tag::query()->paginate($pageSize);
+        //
     }
 
     /**
@@ -23,10 +24,7 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            "name" => "required|string",
-        ]);
-        return Tag::create($request->all());
+        //
     }
 
     /**
@@ -37,7 +35,7 @@ class TagController extends Controller
      */
     public function show($id)
     {
-        return Tag::find($id);
+        //
     }
 
     /**
@@ -49,7 +47,7 @@ class TagController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return Tag::where("id", $id)->update($request->all());
+        //
     }
 
     /**
@@ -60,6 +58,6 @@ class TagController extends Controller
      */
     public function destroy($id)
     {
-        return Tag::destroy($id);
+        //
     }
 }

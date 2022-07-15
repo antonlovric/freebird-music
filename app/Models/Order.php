@@ -28,4 +28,9 @@ class Order extends Model
     {
         return $this->belongsToMany(Cart::class, "cart_items");
     }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
 }

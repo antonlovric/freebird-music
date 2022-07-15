@@ -3,12 +3,17 @@
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\AuthController as ControllersAuthController;
 use App\Http\Controllers\DiscountController;
+use App\Http\Controllers\GenreController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\OpenRequestController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductTypeController;
 use App\Http\Controllers\TagController;
+use App\Models\CartItem;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -45,7 +50,9 @@ Route::controller(DiscountController::class)->group(function () {
     Route::get("/discounts", "index");
 });
 
-
+Route::controller(GenreController::class)->group(function () {
+    Route::get("/genres", "index");
+});
 
 Route::controller(ProductController::class)->group(function () {
     Route::get("/products", "index");
@@ -53,6 +60,19 @@ Route::controller(ProductController::class)->group(function () {
     Route::put("/products/rate/{id}", "rateProduct");
     Route::get("/products/search/{title}", "searchTitle");
     Route::get("/products/filter/{minRating}{maxRating}", "searchTitle");
+});
+
+Route::controller(PaymentController::class)->group(function () {
+    Route::get("/payments/order/{id}", "index");
+    Route::post("/payments", "store");
+});
+
+Route::controller(CartItem::class)->group(function () {
+    Route::get("/cartItems", "index");
+    Route::get("/cartItems/{id}", "show");
+    Route::post("/cartItems", "store");
+    Route::put("/cartItems/{id}", "update");
+    Route::delete("/cartItems/{id}", "destroy");
 });
 
 
@@ -68,7 +88,6 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
 
     // Images
     Route::post("/images", [ImageController::class, "store"]);
-    Route::put("/images/{id}", [ImageController::class, "update"]);
     Route::delete("/images/{id}", [ImageController::class, "destroy"]);
 
     // Tags
@@ -76,31 +95,50 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
     Route::put("/tags/{id}", [TagController::class, "update"]);
     Route::delete("/tags/{id}", [TagController::class, "destroy"]);
 
-    // Tags
+    // ProductTypes
     Route::post("/productTypes", [ProductTypeController::class, "store"]);
     Route::put("/productTypes/{id}", [ProductTypeController::class, "update"]);
     Route::delete("/productTypes/{id}", [ProductTypeController::class, "destroy"]);
 
     // Products
-    Route::post("/products", [ProductTypeController::class, "store"]);
-    Route::put("/products/rateProduct/{id}", [ProductTypeController::class, "rateProduct"]);
-    Route::put("/products/{id}", [ProductTypeController::class, "update"]);
-    Route::delete("/products/{id}", [ProductTypeController::class, "destroy"]);
+    Route::controller(ProductController::class)->group(function () {
+        Route::post("/products", "store");
+        Route::put("/products/rateProduct/{id}", "rateProduct");
+        Route::put("/products/{id}", "update");
+        Route::delete("/products/{id}", "destroy");
+    });
 
     Route::controller(OpenRequestController::class)->group(function () {
-        Route::get("/openRequest", "index");
-        Route::get("/openRequest/{id}", "show");
-        Route::get("/openRequest/user/{id}", "userRequests");
-        Route::post("/openRequest", "store");
-        Route::put("/openRequest", "update");
-        Route::delete("/openRequest/{id}", "destroy");
+        Route::get("/openRequests", "index");
+        Route::get("/openRequests/{id}", "show");
+        Route::get("/openRequests/user/{id}", "userRequests");
+        Route::post("/openRequests", "store");
+        Route::put("/openRequests", "update");
+        Route::delete("/openRequests/{id}", "destroy");
     });
 
     Route::controller(DiscountController::class)->group(function () {
         Route::get("/discounts/{id}", "show");
         Route::post("/discounts", "store");
-        Route::put("/openRequest", "update");
-        Route::delete("/openRequest/{id}", "destroy");
+        Route::put("/discounts", "update");
+        Route::delete("/discounts/{id}", "destroy");
+    });
+
+    Route::controller(GenreController::class)->group(function () {
+        Route::get("/genres/{id}", "show");
+        Route::post("/genres", "store");
+        Route::put("/genres", "update");
+        Route::delete("/genres/{id}", "destroy");
+    });
+
+    Route::controller(PaymentController::class)->group(function () {
+        Route::get("/payments", "index");
+    });
+
+    Route::controller(OrderController::class)->group(function () {
+        Route::get("/orders", "index");
+        Route::post("/orders", "store");
+        Route::get("/orders/{id}", "show");
     });
 
     Route::post("/logout", [ControllersAuthController::class, "logout"]);

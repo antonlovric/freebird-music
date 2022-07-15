@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
-
+use App\Models\OrderDetails;
 use Illuminate\Http\Request;
 
-class PostController extends Controller
+class OrderDetailsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +15,7 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $pageSize = $request->page_size ?? 10;
-        return Post::query()->paginate($pageSize);
+        return OrderDetails::query()->paginate($pageSize);
     }
 
     /**
@@ -28,10 +27,16 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            "heading" => "required",
-            "body" => "required",
+            "billing_address" => "string",
+            "shipping_address" => "string",
+            "phone_number" => "string",
+            "email" => "email",
+            "city" => "string",
+            "country" => "string",
+            "postal_code" => "integer",
+            "user" => "sometimes|nullable|exists:users,id",
         ]);
-        return Post::create($request->all());
+        return OrderDetails::create($request->all());
     }
 
     /**
@@ -42,7 +47,7 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        return Post::find($id);
+        return OrderDetails::find($id);
     }
 
     /**
@@ -54,8 +59,7 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $post = Post::where("id", $id)->update($request->all());
-        return $post;
+        return OrderDetails::where("id", $id)->update($request->all());
     }
 
     /**
@@ -66,27 +70,6 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        return Post::destroy($id);
-    }
-
-    /**
-     * Search for a post title.
-     *
-     * @param  string  $title
-     * @return \Illuminate\Http\Response
-     */
-    public function searchTitle($heading)
-    {
-        return Post::where("heading", "like", "%" . $heading . "%")->get();
-    }
-    /**
-     * Search for a post author.
-     *
-     * @param  string  $title
-     * @return \Illuminate\Http\Response
-     */
-    public function searchAuthor($user)
-    {
-        return Post::where("user_id", "like", "%" . $user . "%")->get();
+        return OrderDetails::destroy($id);
     }
 }

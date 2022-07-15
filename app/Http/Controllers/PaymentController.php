@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
-
+use App\Models\Payment;
 use Illuminate\Http\Request;
 
-class PostController extends Controller
+class PaymentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +15,7 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $pageSize = $request->page_size ?? 10;
-        return Post::query()->paginate($pageSize);
+        return Payment::query()->paginate($pageSize);
     }
 
     /**
@@ -28,10 +27,12 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            "heading" => "required",
-            "body" => "required",
+            "order" => "required|exists:orders,id",
+            "payment_type_id" => "required|exists:payment_types,id",
+            "payment_secret" => "string",
+            "paid_amount" => "numeric|between:0,10000.99",
         ]);
-        return Post::create($request->all());
+        return Payment::create($request->all());
     }
 
     /**
@@ -42,7 +43,7 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        return Post::find($id);
+        return Payment::find($id);
     }
 
     /**
@@ -54,8 +55,7 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $post = Post::where("id", $id)->update($request->all());
-        return $post;
+        return Payment::where("id", $id)->update($request->all());
     }
 
     /**
@@ -66,27 +66,17 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        return Post::destroy($id);
+        return Payment::destroy($id);
     }
 
     /**
-     * Search for a post title.
+     * Search for a order payments.
      *
      * @param  string  $title
      * @return \Illuminate\Http\Response
      */
-    public function searchTitle($heading)
+    public function orderPayments($id)
     {
-        return Post::where("heading", "like", "%" . $heading . "%")->get();
-    }
-    /**
-     * Search for a post author.
-     *
-     * @param  string  $title
-     * @return \Illuminate\Http\Response
-     */
-    public function searchAuthor($user)
-    {
-        return Post::where("user_id", "like", "%" . $user . "%")->get();
+        return Payment::where("order_id", "like", "%" . $id . "%")->get();
     }
 }
