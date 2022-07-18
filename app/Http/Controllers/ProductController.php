@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -39,12 +40,11 @@ class ProductController extends Controller
             "genre" => "exists:genres",
             "edition" => "string",
             "discount" => "sometimes|nullable|exists:discounts",
-            "file" => "required|mimes:png,jpg,jpeg|max:10000"
+            "image" => "required|mimes:png,jpg,jpeg|max:10000"
         ]);
-        if ($request->file('file')) {
-            $request["path"] = $request->file('file')->store('public/images');
-        }
-        return Product::create($request->all());
+        $path = $request->file('image')->store('images', 's3');
+
+        return Product::create([$request->all(), "filename" => basename($path), "url" => Storage::disk('s3')->url($path)]);
     }
 
     /**

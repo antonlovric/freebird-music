@@ -23,6 +23,8 @@ class Product extends Model
         'rating',
         'product_type_id',
         'number_of_ratings',
+        "filename",
+        "url"
     ];
 
     public function tags()
@@ -43,11 +45,6 @@ class Product extends Model
     public function sleeve_condition()
     {
         return $this->belongsTo(Condition::class);
-    }
-
-    public function images()
-    {
-        return $this->hasMany(Image::class);
     }
 
     public function carts()
