@@ -14,8 +14,7 @@ class GenreController extends Controller
      */
     public function index(Request $request)
     {
-        $pageSize = $request->page_size ?? 10;
-        return Genre::query()->paginate($pageSize);
+        return Genre::all();
     }
 
     /**

@@ -13,8 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->foreignId("user_type_id")->after("password")->constrained("user_types")->onDelete("cascade");
+        Schema::table('products', function (Blueprint $table) {
+            $table->renameColumn("sleeve_conditon", "sleeve_condition");
+            $table->renameColumn("media_conditon", "media_condition");
         });
     }
 
@@ -25,7 +26,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('products', function (Blueprint $table) {
             //
         });
     }

@@ -25,7 +25,8 @@ class AuthController extends Controller
             "first_name" => $fields["first_name"],
             "last_name" => $fields["last_name"],
             "email" => $fields["email"],
-            "password" => bcrypt($fields["password"])
+            "password" => bcrypt($fields["password"]),
+            "user_type_id" => 1
         ]);
 
         $token = $user->createToken("myapptoken")->plainTextToken;
@@ -37,13 +38,13 @@ class AuthController extends Controller
 
         event(new Registered($user));
 
-        return [$response, 201];
+        return ["responseData" => $response, "status" => 201];
     }
 
     public function logout(Request $request)
     {
         auth()->user()->tokens()->delete();
-        return ["message" => "Token destroyed"];
+        return ["message" => "Token destroyed", "status" => 204];
     }
 
     public function login(Request $request)
@@ -68,11 +69,15 @@ class AuthController extends Controller
             return response(["message" => "Login failed, please try again later"], 422);
         }
 
+        if ($user["email_verified_at"] == null) {
+            return response(["message" => "Email not verified"], 403);
+        }
+
         $response = [
             "user" => $user,
             "token" => $token
         ];
 
-        return [$response, 201];
+        return ["responseData" => $response, "status" => 201];
     }
 }

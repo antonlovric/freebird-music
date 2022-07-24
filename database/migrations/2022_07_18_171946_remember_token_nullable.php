@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignId("user_type_id")->after("password")->constrained("user_types")->onDelete("cascade");
+            $table->string('remember_token', 100)->nullable()->change();
         });
     }
 

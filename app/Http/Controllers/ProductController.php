@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
@@ -27,24 +28,29 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        Validator::make($request->all(), [
             "title" => "required|string",
-            "initial_price" => "required|integer",
+            "initial_price" => ["integer", "required"],
             "description" => "string",
             "sleeve_condition" => "exists:conditions,id",
             "media_condition" => "exists:conditions,id",
             "sku" => "string",
-            "rating" => "decimal",
-            "product_type" => "exists:product_types,id",
+            "rating" => "integer",
+            "product_type_id" => "exists:product_types,id",
             "author" => "string",
-            "genre" => "exists:genres",
+            "genre_id" => "exists:genres,id",
             "edition" => "string",
-            "discount" => "sometimes|nullable|exists:discounts",
-            "image" => "required|mimes:png,jpg,jpeg|max:10000"
+            "discount_id" => "sometimes|nullable|exists:discounts,id",
+            "image" => "mimes:jpg,jpeg,png,webp"
         ]);
-        $path = $request->file('image')->store('images', 's3');
-
-        return Product::create([$request->all(), "filename" => basename($path), "url" => Storage::disk('s3')->url($path)]);
+        $path = $request->file('image')->store('images', 'public');
+        $arrayElements = ["title", "description","initial_price", "description","sleeve_condition", "media_condition"
+        ,"sku","rating", "number_of_ratings", "product_type_id", "stock", "author", "genre_id" , "edition", "discount_id"];
+        $values = [];
+        foreach ($arrayElements as $element) {
+            $values[$element] = $request[$element];
+        }
+        return Product::create([...$values, "filename" => basename($path), "url" => Storage::disk('public')->url($path)]);
     }
 
     /**

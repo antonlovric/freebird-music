@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ProductType;
-
+use App\Models\Condition;
 use Illuminate\Http\Request;
 
-class ProductTypeController extends Controller
+class ConditionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +14,7 @@ class ProductTypeController extends Controller
      */
     public function index()
     {
-        return ProductType::all();
+        return Condition::all();
     }
 
     /**
@@ -26,10 +25,7 @@ class ProductTypeController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            "name" => "required|string",
-        ]);
-        return ProductType::create($request->all());
+        //
     }
 
     /**
@@ -40,7 +36,7 @@ class ProductTypeController extends Controller
      */
     public function show($id)
     {
-        return ProductType::find($id);
+        //
     }
 
     /**
@@ -52,7 +48,7 @@ class ProductTypeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return ProductType::where("id", $id)->update($request->all());
+        //
     }
 
     /**
@@ -63,6 +59,6 @@ class ProductTypeController extends Controller
      */
     public function destroy($id)
     {
-        return ProductType::destroy($id);
+        //
     }
 }

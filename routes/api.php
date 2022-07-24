@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\AuthController as ControllersAuthController;
+use App\Http\Controllers\ConditionController;
 use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\ImageController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductTypeController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\UserController;
 use App\Models\CartItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -75,12 +77,17 @@ Route::controller(CartItem::class)->group(function () {
     Route::delete("/cartItems/{id}", "destroy");
 });
 
+Route::controller(ConditionController::class)->group(function () {
+    Route::get("/conditions", "index");
+});
+
+Route::controller(ProductTypeController::class)->group(function () {
+    Route::get("/productTypes", "index");
+});
 
 
 //Protected routes
 Route::group(["middleware" => ["auth:sanctum"]], function () {
-    Route::post("/auth/logout", [ControllersAuthController::class, "logout"]);
-
     // Posts
     Route::post("/posts", [PostController::class, "store"]);
     Route::put("/posts/{id}", [PostController::class, "update"]);
@@ -141,7 +148,14 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
         Route::get("/orders/{id}", "show");
     });
 
-    Route::post("/logout", [ControllersAuthController::class, "logout"]);
+    Route::controller(UserController::class)->group(function () {
+        Route::get("/users", "index");
+        Route::post("/users/deleteUsers", "destroyUsers");
+    });
+
+    
+
+    Route::post("/auth/logout", [ControllersAuthController::class, "logout"]);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
