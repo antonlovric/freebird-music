@@ -2,12 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cart;
+use App\Models\ProductReviews;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 
-class CartController extends Controller
+class ProductReviewsController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        return ProductReviews::all();
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -17,15 +26,12 @@ class CartController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            "user_id" => "exists:users,id"
+            "review" => "string",
+            "user_id" => "required|exists:users,id",
+            "product_id" => "required|exists:products,id",
+            "rating" => "required|integer",
         ]);
-
-        $cart = new Cart();
-        if ($user_id = $cart->getActiveCart($request["user_id"])) {
-            return ["user_id" => $user_id ,"status" => "200"];
-        }
-
-        return Cart::create($request->all());
+        return ProductReviews::create($request->all());
     }
 
     /**
@@ -36,7 +42,7 @@ class CartController extends Controller
      */
     public function show($id)
     {
-        return Cart::find($id);
+        //
     }
 
     /**
@@ -48,7 +54,7 @@ class CartController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return Cart::where("id", $id)->update($request->all());
+        //
     }
 
     /**
@@ -59,6 +65,6 @@ class CartController extends Controller
      */
     public function destroy($id)
     {
-        return Cart::destroy($id);
+        //
     }
 }

@@ -17,7 +17,30 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $pageSize = $request->page_size ?? 10;
-        return Product::query()->paginate($pageSize);
+        // return Product::query()->paginate($pageSize);
+        $requestTitle = $request->query("title");
+        $requestFormat = $request->query("format");
+        $requestMediaCondition = $request->query("media_condition");
+        $requestSleeveCondition = $request->query("sleeve_condition");
+        $requestGenre = $request->query("genre");
+        $requestMinPrice = $request->query("min_price");
+        $requestMaxPrice = $request->query("max_price");
+
+        return Product::query()->when($requestTitle, function($query, $title) {
+            $query->where("title", "LIKE", "%" . $title . "%");
+        })->when($requestFormat, function($query, $format) {
+            $query->where("product_type_id", "=", $format);
+        })->when($requestMediaCondition, function($query, $media_condition) {
+            $query->where("media_condition", "=", $media_condition);
+        })->when($requestSleeveCondition, function($query, $sleeve_condition) {
+            $query->where("sleeve_condition", "=", $sleeve_condition);
+        })->when($requestGenre, function($query, $genre) {
+            $query->where("genre_id", "=", $genre);
+        })->when($requestMinPrice, function($query, $min_price) {
+            $query->where("initial_price", ">=", $min_price);
+        })->when($requestMaxPrice, function($query, $max_price) {
+            $query->where("initial_price", "<=", $max_price);
+        })->paginate($pageSize);
     }
 
     /**
@@ -50,7 +73,7 @@ class ProductController extends Controller
         foreach ($arrayElements as $element) {
             $values[$element] = $request[$element];
         }
-        return Product::create([...$values, "filename" => basename($path), "url" => Storage::disk('public')->url($path)]);
+         return Product::create([...$values, "filename" => basename($path), "url" => Storage::disk('public')->url($path)]);
     }
 
     /**
@@ -61,7 +84,7 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        return Product::find($id);
+        return Product::query()->with(["media_condition", "sleeve_condition", "product_type", "genre"])->find($id);
     }
 
     /**
@@ -93,10 +116,13 @@ class ProductController extends Controller
      * @param  string  $title
      * @return \Illuminate\Http\Response
      */
-    public function searchTitle($title, Request $request)
+    public function searchTitle(Request $request, $title = "" )
     {
         $pageSize = $request->page_size ?? 10;
-        return Product::where("title", "LIKE", "%" . $title . "%")->paginate($pageSize);
+        return Product::query()
+            ->when($title, function ($q, $title) {
+            return $q->where('title', 'LIKE', "%{$title}%");
+    })->paginate($request->page_size ?? 10);
     }
     /**
      * Filter by rating.
@@ -109,12 +135,6 @@ class ProductController extends Controller
     {
         $pageSize = $request->page_size ?? 10;
         return Product::where([["rating", ">=", $minRating], ["rating", "<=", $maxRating]])->paginate($pageSize);
-    }
-
-    public function filterProductType($productType, Request $request)
-    {
-        $pageSize = $request->page_size ?? 10;
-        return Product::where(["product_type_id", "=", $productType])->paginate($pageSize);
     }
 
     /**

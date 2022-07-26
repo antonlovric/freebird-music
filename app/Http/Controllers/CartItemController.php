@@ -30,7 +30,7 @@ class CartItemController extends Controller
             "product_id" => "exists:products,id",
             "order_id" => "sometimes|nullable|exists:orders,id",
             "quantity" => "integer",
-            "final_price" => "numeric|between:0,100000.99",
+            "final_price" => "numeric|between:0,1000000.99",
         ]);
         return CartItem::create($request->all());
     }

@@ -42,12 +42,12 @@ class Product extends Model
 
     public function media_condition()
     {
-        return $this->belongsTo(Condition::class);
+        return $this->belongsTo(Condition::class, "media_condition");
     }
 
     public function sleeve_condition()
     {
-        return $this->belongsTo(Condition::class);
+        return $this->belongsTo(Condition::class, "sleeve_condition");
     }
 
     public function carts()
@@ -58,5 +58,13 @@ class Product extends Model
     public function discount()
     {
         return $this->belongsTo(Discount::class);
+    }
+
+    public function users() {
+        return $this->belongsToMany(User::class, "product_reviews");
+    }
+
+    public function product_type() {
+        return $this->belongsTo(ProductType::class);
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
@@ -33,7 +34,7 @@ class AuthController extends Controller
 
         $response = [
             "user" => $user,
-            "token" => $token
+            "token" => $token,
         ];
 
         event(new Registered($user));
@@ -44,6 +45,7 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         auth()->user()->tokens()->delete();
+        $request->session()->invalidate();
         return ["message" => "Token destroyed", "status" => 204];
     }
 
@@ -72,12 +74,15 @@ class AuthController extends Controller
         if ($user["email_verified_at"] == null) {
             return response(["message" => "Email not verified"], 403);
         }
+        $request->session()->regenerate();
+        $session_id = $request->session()->getId();
+        User::where("id", $user["id"])->update(["session_id" => $session_id]);
 
         $response = [
             "user" => $user,
-            "token" => $token
+            "token" => $token,
+            "session" => $session_id
         ];
-
         return ["responseData" => $response, "status" => 201];
     }
 }

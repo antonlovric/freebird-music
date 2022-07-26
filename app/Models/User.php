@@ -24,6 +24,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'user_type_id',
+        'session_id'
     ];
 
     /**
@@ -78,5 +79,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function open_requests()
     {
         return $this->hasMany(OpenRequest::class);
+    }
+
+    public function reviews()
+    {
+        return $this->belongsToMany(Product::class, "product_reviews");
     }
 }

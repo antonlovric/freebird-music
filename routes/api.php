@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\AuthController as ControllersAuthController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\ConditionController;
 use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\GenreController;
@@ -14,6 +16,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductTypeController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
+use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -60,7 +63,7 @@ Route::controller(ProductController::class)->group(function () {
     Route::get("/products", "index");
     Route::get("/products/{id}", "show");
     Route::put("/products/rate/{id}", "rateProduct");
-    Route::get("/products/search/{title}", "searchTitle");
+    Route::get("/products/search/{title?}", "searchTitle");
     Route::get("/products/filter/{minRating}{maxRating}", "searchTitle");
 });
 
@@ -69,7 +72,7 @@ Route::controller(PaymentController::class)->group(function () {
     Route::post("/payments", "store");
 });
 
-Route::controller(CartItem::class)->group(function () {
+Route::controller(CartItemController::class)->group(function () {
     Route::get("/cartItems", "index");
     Route::get("/cartItems/{id}", "show");
     Route::post("/cartItems", "store");
@@ -153,7 +156,9 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
         Route::post("/users/deleteUsers", "destroyUsers");
     });
 
-    
+    Route::controller(CartController::class)->group(function () {
+        Route::post("/cart", "store");
+    });
 
     Route::post("/auth/logout", [ControllersAuthController::class, "logout"]);
 });

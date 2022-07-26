@@ -23,4 +23,8 @@ class Cart extends Model
     {
         return $this->belongsToMany(Product::class, "cart_items");
     }
+
+    public function getActiveCart($user_id) {
+        return $this->query()->where("user_id", "=", $user_id)->where("active", "=", "true")->first("id");
+    }
 }
