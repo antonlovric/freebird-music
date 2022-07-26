@@ -28,10 +28,13 @@ class CartItemController extends Controller
         $request->validate([
             "cart_id" => "exists:carts,id",
             "product_id" => "exists:products,id",
-            "order_id" => "sometimes|nullable|exists:orders,id",
             "quantity" => "integer",
             "price" => "required|numeric|between:0,1000000.99",
         ]);
+        if ($existingProduct = CartItem::query()->where("product_id", "=", $request["product_id"])->first()) {
+            return $existingProduct->update(["quantity" => $existingProduct["quantity"] + 1]);
+        }
+
         return CartItem::create($request->all());
     }
 
