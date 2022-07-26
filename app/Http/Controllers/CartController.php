@@ -17,12 +17,11 @@ class CartController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            "user_id" => "exists:users,id"
+            "session_id" => "required|exists:users,session_id"
         ]);
-
-        $cart = new Cart();
-        if ($user_id = $cart->getActiveCart($request["user_id"])) {
-            return ["user_id" => $user_id ,"status" => "200"];
+        
+        if ($existing_cart = Cart::query()->where("session_id", "=", $request["session_id"])->first("id")) {
+            return $existing_cart;
         }
 
         return Cart::create($request->all());

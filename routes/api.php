@@ -16,9 +16,6 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductTypeController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
-use App\Models\Cart;
-use App\Models\CartItem;
-use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -88,6 +85,9 @@ Route::controller(ProductTypeController::class)->group(function () {
     Route::get("/productTypes", "index");
 });
 
+Route::controller(CartController::class)->group(function () {
+    Route::post("/carts", "store");
+});
 
 //Protected routes
 Route::group(["middleware" => ["auth:sanctum"]], function () {
@@ -154,10 +154,6 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
     Route::controller(UserController::class)->group(function () {
         Route::get("/users", "index");
         Route::post("/users/deleteUsers", "destroyUsers");
-    });
-
-    Route::controller(CartController::class)->group(function () {
-        Route::post("/cart", "store");
     });
 
     Route::post("/auth/logout", [ControllersAuthController::class, "logout"]);

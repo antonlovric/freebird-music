@@ -9,22 +9,18 @@ class Cart extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'user_id',
+        'session_id',
         'active',
         'total',
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, "session_id");
     }
 
     public function products()
     {
         return $this->belongsToMany(Product::class, "cart_items");
-    }
-
-    public function getActiveCart($user_id) {
-        return $this->query()->where("user_id", "=", $user_id)->where("active", "=", "true")->first("id");
     }
 }
