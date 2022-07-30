@@ -20,7 +20,7 @@ class CartController extends Controller
             "session_id" => "required|exists:users,session_id"
         ]);
         
-        if ($existing_cart = Cart::query()->where("session_id", "=", $request["session_id"])->first("id")) {
+        if ($existing_cart = Cart::query()->where([["session_id", "=", $request["session_id"]], ["active", "=", 1]])->first("id")) {
             return $existing_cart;
         }
 

@@ -87,6 +87,11 @@ Route::controller(ProductTypeController::class)->group(function () {
 
 Route::controller(CartController::class)->group(function () {
     Route::post("/carts", "store");
+    Route::put("/carts/{id}", "update");
+});
+
+Route::controller(OrderController::class)->group(function () {
+    Route::post("/orders", "store");
 });
 
 //Protected routes
@@ -147,7 +152,6 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
 
     Route::controller(OrderController::class)->group(function () {
         Route::get("/orders", "index");
-        Route::post("/orders", "store");
         Route::get("/orders/{id}", "show");
     });
 

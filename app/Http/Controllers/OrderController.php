@@ -28,8 +28,19 @@ class OrderController extends Controller
     {
         $request->validate([
             "total" => "numeric|between:0,100000.99",
-            "order_status" => "required|exists:order_status,id",
-            "order_details" => "required|exists:order_details,id",
+            "order_status_id" => "required|exists:order_statuses,id",
+            "billing_address" => "required|string",
+            "shipping_address" => "string",
+            "phone" => "nullable|string",
+            "email" => "required|string",
+            "billing_city" => "string",
+            "shipping_city" => "string",
+            "billing_country" => "string",
+            "shipping_country" => "string",
+            "billing_zipcode" => "string",
+            "shipping_zipcode" => "string",
+            "session_id" => "nullable|sometimes|exists:users,session_id",
+            "cart_id" => "exists:carts,id",
         ]);
         return Order::create($request->all());
     }

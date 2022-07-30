@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -17,7 +18,6 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $pageSize = $request->page_size ?? 10;
-        // return Product::query()->paginate($pageSize);
         $requestTitle = $request->query("title");
         $requestFormat = $request->query("format");
         $requestMediaCondition = $request->query("media_condition");
@@ -82,8 +82,10 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     public function show($id)
     {
+        if(!is_numeric($id)) return Response::json(["message" => "error"], 400);
         return Product::query()->with(["media_condition", "sleeve_condition", "product_type", "genre"])->find($id);
     }
 

@@ -46,7 +46,10 @@ class CartItemController extends Controller
      */
     public function show($id)
     {
-        return CartItem::find($id);
+        return CartItem::query()
+            ->where("cart_id", "=", $id)
+            ->with(["products", "products.media_condition", "products.product_type","products.sleeve_condition" ])
+            ->get();
     }
 
     /**
@@ -69,6 +72,6 @@ class CartItemController extends Controller
      */
     public function destroy($id)
     {
-        return CartItem::destroy($id);
+        return CartItem::query()->where("product_id", "=", $id)->delete();
     }
 }

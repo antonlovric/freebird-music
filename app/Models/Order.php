@@ -10,23 +10,34 @@ class Order extends Model
     use HasFactory;
     protected $fillable = [
         'total',
-        'order_details',
-        'order_status',
+        'order_status_id',
+        'billing_address',
+        'shipping_address',
+        'phone',
+        'email',
+        'shipping_city',
+        'billing_city',
+        'shipping_country',
+        'billing_country',
+        'shipping_zipcode',
+        'billing_zipcode',
+        'session_id',
+        'cart_id',
     ];
 
     public function order_status()
     {
-        return $this->belongsTo(OrderStatus::class);
+        return $this->belongsTo(OrderStatus::class, "order_status_id");
     }
 
-    public function order_details()
+    public function cart()
     {
-        return $this->belongsTo(OrderDetails::class);
+        return $this->belongsTo(Cart::class, "cart_id");
     }
 
-    public function carts()
+    public function user()
     {
-        return $this->belongsToMany(Cart::class, "cart_items");
+        return $this->belongsTo(User::class, "user_id");
     }
 
     public function payments()
