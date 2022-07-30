@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -42,6 +43,9 @@ class OrderController extends Controller
             "session_id" => "nullable|sometimes|exists:users,session_id",
             "cart_id" => "exists:carts,id",
         ]);
+        $user_id = User::query()->where("session_id", "=", $request["session_id"])->first("id")["id"];
+        $request->request->remove("session_id");
+        $request->request->add(["user_id" => $user_id]);
         return Order::create($request->all());
     }
 

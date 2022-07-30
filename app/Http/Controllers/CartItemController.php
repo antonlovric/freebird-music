@@ -31,7 +31,7 @@ class CartItemController extends Controller
             "quantity" => "integer",
             "price" => "required|numeric|between:0,1000000.99",
         ]);
-        if ($existingProduct = CartItem::query()->where("product_id", "=", $request["product_id"])->first()) {
+        if ($existingProduct = CartItem::query()->where([["product_id", "=", $request["product_id"]], ["cart_id", "=", $request["cart_id"]]])->first()) {
             return $existingProduct->update(["quantity" => $existingProduct["quantity"] + 1]);
         }
 
