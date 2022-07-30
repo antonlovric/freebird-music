@@ -154,4 +154,15 @@ class ProductController extends Controller
 
         return Product::where("id", $id)->update(["rating" => $newRating, "number_of_ratings" => $newNumberOfRatings]);
     }
+    /**
+     * Rate product.
+     *
+     * @param  integer  $id
+     * @param  integer  $rating
+     * @return \Illuminate\Http\Response
+     */
+    public function getFeatured()
+    {
+        return Product::query()->where("featured", "=", 1)->paginate(4, ["id", "title", "url"]);
+    }
 }
