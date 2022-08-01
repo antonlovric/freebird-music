@@ -12,6 +12,7 @@ use App\Http\Controllers\OpenRequestController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\PostImageController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductTypeController;
 use App\Http\Controllers\TagController;
@@ -44,6 +45,7 @@ Route::controller(ControllersAuthController::class)->group(function () {
 
 Route::controller(PostController::class)->group(function () {
     Route::get("/posts", "index");
+    Route::get("/posts/latest", "recentPosts");
     Route::get("/posts/{id}", "show");
     Route::get("/posts/search/{authorID}", "searchAuthor");
 });
@@ -98,9 +100,11 @@ Route::controller(OrderController::class)->group(function () {
 //Protected routes
 Route::group(["middleware" => ["auth:sanctum"]], function () {
     // Posts
-    Route::post("/posts", [PostController::class, "store"]);
-    Route::put("/posts/{id}", [PostController::class, "update"]);
-    Route::delete("/posts/{id}", [PostController::class, "destroy"]);
+    Route::controller(PostController::class)->group(function() {
+        Route::post("/posts", "store");
+        Route::put("/posts/{id}", "update");
+        Route::delete("/posts/{id}", "destroy");
+    });
 
     // Images
     Route::post("/images", [ImageController::class, "store"]);
@@ -122,6 +126,7 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
         Route::put("/products/rateProduct/{id}", "rateProduct");
         Route::put("/products/{id}", "update");
         Route::delete("/products/{id}", "destroy");
+        Route::post("/products/deleteProducts", "destroyProducts");
     });
 
     Route::controller(OpenRequestController::class)->group(function () {
@@ -159,6 +164,12 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
     Route::controller(UserController::class)->group(function () {
         Route::get("/users", "index");
         Route::post("/users/deleteUsers", "destroyUsers");
+    });
+
+    Route::controller(PostImageController::class)->group(function() {
+        Route::post("/postImages/assign", "assignToPost");
+        Route::post("/postImages", "store");
+        Route::delete("/postImages/deleteImage", "destroy");
     });
 
     Route::post("/auth/logout", [ControllersAuthController::class, "logout"]);

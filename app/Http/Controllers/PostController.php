@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
-
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
@@ -28,9 +29,14 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            "heading" => "required",
-            "body" => "required",
+            "heading" => "required|string",
+            "body" => "required|string",
+            "session_id" => "required|exists:users,session_id"
         ]);
+        $user_id = User::query()->where("session_id", "=", $request["session_id"])->first("id")["id"];
+        $request->request->remove("session_id");
+        $request->request->add(["user_id" => $user_id]);
+        
         return Post::create($request->all());
     }
 
@@ -42,7 +48,7 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        return Post::find($id);
+        return Post::with("images")->find($id);
     }
 
     /**
@@ -88,5 +94,16 @@ class PostController extends Controller
     public function searchAuthor($user)
     {
         return Post::where("user_id", "like", "%" . $user . "%")->get();
+    }
+
+    /**
+     * Get last 3 posts
+     *
+     * @param  string  $title
+     * @return \Illuminate\Http\Response
+     */
+    public function recentPosts()
+    {
+        return Post::with("images")->orderBy("id", "desc")->take(3)->get();
     }
 }

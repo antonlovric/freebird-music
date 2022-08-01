@@ -155,14 +155,34 @@ class ProductController extends Controller
         return Product::where("id", $id)->update(["rating" => $newRating, "number_of_ratings" => $newNumberOfRatings]);
     }
     /**
-     * Rate product.
+     * Get featured products.
      *
-     * @param  integer  $id
-     * @param  integer  $rating
      * @return \Illuminate\Http\Response
      */
     public function getFeatured()
     {
         return Product::query()->where("featured", "=", 1)->paginate(4, ["id", "title", "url"]);
+    }
+
+    /**
+     * Get featured products.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function decreaseStock($id)
+    {
+        return Product::query()->where("id", "=", $id)->decrement("stock");
+    }
+
+    /**
+     * Remove Multiple Products.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroyProducts(Request $request)
+    {
+        $ids = $request->ids;
+        return ["response" => Product::whereIn("id",$ids)->delete(), "status" => 204];
     }
 }

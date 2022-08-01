@@ -25,7 +25,6 @@ class Product extends Model
         'edition',
         'stock',
         'product_type_id',
-        'number_of_ratings',
         "filename",
         "url"
     ];
