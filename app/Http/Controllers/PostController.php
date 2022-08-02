@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
@@ -17,7 +16,10 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $pageSize = $request->page_size ?? 10;
-        return Post::query()->paginate($pageSize);
+        $requestHeading = $request->query("heading");
+        return Post::with("images")->when($requestHeading, function($query, $heading) {
+            $query->where("heading", "LIKE", "%" . $heading . "%");
+        })->paginate($pageSize);
     }
 
     /**
@@ -105,5 +107,17 @@ class PostController extends Controller
     public function recentPosts()
     {
         return Post::with("images")->orderBy("id", "desc")->take(3)->get();
+    }
+
+    /**
+     * Remove Multiple Posts.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroyPosts(Request $request)
+    {
+        $ids = $request->ids;
+        return ["response" => Post::whereIn("id",$ids)->delete(), "status" => 200];
     }
 }

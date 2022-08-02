@@ -104,6 +104,7 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
         Route::post("/posts", "store");
         Route::put("/posts/{id}", "update");
         Route::delete("/posts/{id}", "destroy");
+        Route::post("/posts/deletePosts", "destroyPosts");
     });
 
     // Images
@@ -163,6 +164,7 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
 
     Route::controller(UserController::class)->group(function () {
         Route::get("/users", "index");
+        Route::get("/users/session", "getSession");
         Route::post("/users/deleteUsers", "destroyUsers");
     });
 
