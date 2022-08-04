@@ -35,9 +35,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($session_id)
     {
-        //
+        return User::query()->where("session_id", "=", $session_id)->first(["first_name", "last_name", "email", "phone"]);
+
     }
 
     /**
@@ -48,7 +49,10 @@ class UserController extends Controller
      */
     public function getSession(Request $request)
     {
-        return User::query()->where("session_id", "=", $request["session_id"])->first();
+        $request->validate([
+            "session_id" => "exists:users,session_id"
+        ]);
+        return User::query()->with(["orders", "orders.order_status", "orders.cart", "orders.cart.products"])->where("session_id", "=", $request["session_id"])->first();
     }
 
     /**
@@ -58,9 +62,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $session_id)
     {
-        //
+        return User::where("session_id", $session_id)->update($request->all());
     }
 
     /**

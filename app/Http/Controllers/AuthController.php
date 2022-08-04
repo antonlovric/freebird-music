@@ -51,11 +51,10 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $string_or_boolean_rule = is_string($request->input("remember_me", false)) ? 'string' : 'boolean';
         $fields = $request->validate([
             "email" => "required|string",
             "password" => "required|string",
-            "remember_me" => "{$string_or_boolean_rule}"
+            "remember_me" => "nullable|boolean"
         ]);
 
         $user = User::where("email", $fields["email"])->first();
@@ -65,9 +64,9 @@ class AuthController extends Controller
         }
 
         $token = $user->createToken("myapptoken")->plainTextToken;
-        $remember = filter_var($request->input("remember_me", false), FILTER_VALIDATE_BOOLEAN);
+        $rememberMe = $fields["remember_me"] ?? false;
 
-        if (!Auth::attempt(["email" => $fields["email"], "password" => $fields["password"]], $remember)) {
+        if (!Auth::attempt(["email" => $fields["email"], "password" => $fields["password"]], $rememberMe)) {
             return response(["message" => "Login failed, please try again later"], 422);
         }
 
@@ -77,12 +76,13 @@ class AuthController extends Controller
         $request->session()->regenerate();
         $session_id = $request->session()->getId();
         User::where("id", $user["id"])->update(["session_id" => $session_id]);
-
         $response = [
             "user" => $user,
             "token" => $token,
             "session" => $session_id
         ];
+        
         return ["responseData" => $response, "status" => 201];
+        return 1; 
     }
 }

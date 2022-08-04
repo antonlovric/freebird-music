@@ -23,6 +23,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'last_name',
         'email',
         'password',
+        'phone',
+        'city',
+        'country',
+        'zipcode',
         'user_type_id',
         'session_id'
     ];
@@ -63,7 +67,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function carts()
     {
-        return $this->hasMany(Cart::class);
+        return $this->hasMany(Cart::class, "session_id", "session_id");
     }
 
     public function posts()
@@ -71,9 +75,9 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Post::class);
     }
 
-    public function order_details()
+    public function orders() 
     {
-        return $this->hasMany(OrderDetails::class);
+        return $this->hasMany(Order::class, "user_id", "id");
     }
 
     public function open_requests()

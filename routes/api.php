@@ -165,6 +165,8 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
     Route::controller(UserController::class)->group(function () {
         Route::get("/users", "index");
         Route::get("/users/session", "getSession");
+        Route::get("/users/{session_id}", "show");
+        Route::put("/users/{session_id}", "update");
         Route::post("/users/deleteUsers", "destroyUsers");
     });
 
