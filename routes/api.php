@@ -8,6 +8,7 @@ use App\Http\Controllers\ConditionController;
 use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\OpenRequestController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
@@ -95,6 +96,10 @@ Route::controller(CartController::class)->group(function () {
 
 Route::controller(OrderController::class)->group(function () {
     Route::post("/orders", "store");
+});
+
+Route::controller(NewsletterController::class)->group(function() {
+    Route::post("/newsletter/subscribe", "subscribe");
 });
 
 //Protected routes
