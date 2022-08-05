@@ -61,6 +61,25 @@ class OrderController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function getOrderedProducts(Request $request)
+    {
+        $user_id = User::query()->where("session_id", "=", $request["session_id"])->first("id")["id"];
+        $products = [];
+        $userInfo = Order::with(["cart", "cart.products"])->where("user_id", "=", $user_id)->get();
+
+        for ($i = 0; $i < count($userInfo); $i++) {
+            if (count($userInfo[$i]["cart"]["products"]) > 0) $products[] = $userInfo[$i]["cart"]["products"];
+        }
+
+        return $products;
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

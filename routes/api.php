@@ -15,6 +15,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\PostImageController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductReviewsController;
 use App\Http\Controllers\ProductTypeController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
@@ -164,6 +165,7 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
 
     Route::controller(OrderController::class)->group(function () {
         Route::get("/orders", "index");
+        Route::get("/orders/products", "getOrderedProducts");
         Route::get("/orders/{id}", "show");
     });
 
@@ -179,6 +181,10 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
         Route::post("/postImages/assign", "assignToPost");
         Route::post("/postImages", "store");
         Route::delete("/postImages/deleteImage", "destroy");
+    });
+
+    Route::controller(ProductReviewsController::class)->group(function() {
+        Route::post("/productReviews", "store");
     });
 
     Route::post("/auth/logout", [ControllersAuthController::class, "logout"]);

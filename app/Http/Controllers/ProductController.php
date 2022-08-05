@@ -138,22 +138,6 @@ class ProductController extends Controller
         $pageSize = $request->page_size ?? 10;
         return Product::where([["rating", ">=", $minRating], ["rating", "<=", $maxRating]])->paginate($pageSize);
     }
-
-    /**
-     * Rate product.
-     *
-     * @param  integer  $id
-     * @param  integer  $rating
-     * @return \Illuminate\Http\Response
-     */
-    public function rateProduct($id, Request $request)
-    {
-        $product = $this->show($id);
-        $newNumberOfRatings = $product["number_of_ratings"] + 1;
-        $newRating = ($product["rating"] + $request->rating) / $newNumberOfRatings;
-
-        return Product::where("id", $id)->update(["rating" => $newRating, "number_of_ratings" => $newNumberOfRatings]);
-    }
     /**
      * Get featured products.
      *
