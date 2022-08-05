@@ -38,8 +38,9 @@ class ProductReviewsController extends Controller
         $request->request->add(["user_id" => $user_id]);
 
         $current_rating = Product::query()->where("id", "=", $request["product_id"])->first("rating")["rating"];
-        $number_of_ratings = count(ProductReviews::query()->where("id", "=", $request["product_id"])->get()) + 1;
-        $new_rating = ($current_rating * ($number_of_ratings - 1) + $request["rating"]) / $number_of_ratings;
+        $number_of_ratings = count(ProductReviews::query()->where("product_id", "=", $request["product_id"])->get());
+        $rating = $request["rating"];
+        $new_rating = (($current_rating * $number_of_ratings) + $request["rating"]) / ($number_of_ratings + 1);
         $new_review = ProductReviews::create($request->all());
         Product::query()->where("id", "=", $request["product_id"])->update(["rating" => $new_rating]);
 
