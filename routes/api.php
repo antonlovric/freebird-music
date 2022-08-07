@@ -41,8 +41,9 @@ Route::post('/email/verification-notification', function (Request $request) {
 })->name('verification.send');
 
 Route::controller(ControllersAuthController::class)->group(function () {
-    Route::post("/auth/register", [ControllersAuthController::class, "register"]);
-    Route::post("/auth/login", [ControllersAuthController::class, "login"]);
+    Route::post("/auth/register", "register");
+    Route::post("/auth/login", "login");
+    Route::post("/auth/remember", "getRememberedUser");
 });
 
 Route::controller(PostController::class)->group(function () {

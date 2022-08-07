@@ -49,6 +49,28 @@ class AuthController extends Controller
         return ["message" => "Token destroyed", "status" => 204];
     }
 
+    public function getRememberedUser(Request $request)
+    {
+        $request->validate(["remember_token" => "required|string"]);
+        $remember_token = $request["remember_token"];
+        $user = User::query()->where("remember_token", "=", $remember_token)->first();
+        if (!$user) {
+            return response(["message" => "User not found"], 404);
+        }
+        $request->session()->regenerate();
+        $session_id = $request->session()->getId();
+        $token = $user->createToken("myapptoken")->plainTextToken;
+        User::where("id", $user["id"])->update(["session_id" => $session_id]);
+        $userData = Auth::loginUsingId($user["id"], true); 
+        $response = [
+            "user" => $user,
+            "token" => $token,
+            "session" => $session_id
+        ];
+        
+        return ["responseData" => $response, "status" => 201];
+    }
+
     public function login(Request $request)
     {
         $fields = $request->validate([
@@ -83,6 +105,5 @@ class AuthController extends Controller
         ];
         
         return ["responseData" => $response, "status" => 201];
-        return 1; 
     }
 }

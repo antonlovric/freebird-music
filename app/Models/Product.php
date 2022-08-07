@@ -26,7 +26,8 @@ class Product extends Model
         'stock',
         'product_type_id',
         "filename",
-        "url"
+        "url",
+        "discount"
     ];
 
     public function tags()
@@ -52,11 +53,6 @@ class Product extends Model
     public function carts()
     {
         return $this->belongsToMany(Cart::class, "cart_items");
-    }
-
-    public function discount()
-    {
-        return $this->belongsTo(Discount::class);
     }
 
     public function users() {

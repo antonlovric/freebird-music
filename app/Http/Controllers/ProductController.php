@@ -63,12 +63,12 @@ class ProductController extends Controller
             "author" => "string",
             "genre_id" => "exists:genres,id",
             "edition" => "string",
-            "discount_id" => "sometimes|nullable|exists:discounts,id",
+            "discount" => "sometimes|nullable|integer",
             "image" => "mimes:jpg,jpeg,png,webp"
         ]);
         $path = $request->file('image')->store('images', 'public');
         $arrayElements = ["title", "description","initial_price", "description","sleeve_condition", "media_condition"
-        ,"sku","rating", "number_of_ratings", "product_type_id", "stock", "author", "genre_id" , "edition", "discount_id"];
+        ,"sku","rating", "number_of_ratings", "product_type_id", "stock", "author", "genre_id" , "edition", "discount"];
         $values = [];
         foreach ($arrayElements as $element) {
             $values[$element] = $request[$element];
