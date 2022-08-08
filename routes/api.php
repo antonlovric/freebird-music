@@ -64,6 +64,7 @@ Route::controller(GenreController::class)->group(function () {
 Route::controller(ProductController::class)->group(function () {
     Route::get("/products", "index");
     Route::get("/products/featured", "getFeatured");
+    Route::post("/products/multiple", "showMultiple");
     Route::get("/products/{id}", "show");
     Route::put("/products/rate/{id}", "rateProduct");
     Route::get("/products/search/{title?}", "searchTitle");
@@ -104,6 +105,10 @@ Route::controller(NewsletterController::class)->group(function() {
     Route::post("/newsletter/subscribe", "subscribe");
 });
 
+Route::controller(OpenRequestController::class)->group(function () {
+    Route::post("/openRequests", "store");
+});
+
 //Protected routes
 Route::group(["middleware" => ["auth:sanctum"]], function () {
     // Posts
@@ -141,7 +146,6 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
         Route::get("/openRequests", "index");
         Route::get("/openRequests/{id}", "show");
         Route::get("/openRequests/user/{id}", "userRequests");
-        Route::post("/openRequests", "store");
         Route::put("/openRequests", "update");
         Route::delete("/openRequests/{id}", "destroy");
     });

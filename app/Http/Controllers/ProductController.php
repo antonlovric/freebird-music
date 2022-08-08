@@ -26,7 +26,7 @@ class ProductController extends Controller
         $requestMinPrice = $request->query("min_price");
         $requestMaxPrice = $request->query("max_price");
 
-        return Product::query()->when($requestTitle, function($query, $title) {
+        return Product::query()->with(["media_condition", "sleeve_condition", "product_type"])->when($requestTitle, function($query, $title) {
             $query->where("title", "LIKE", "%" . $title . "%");
         })->when($requestFormat, function($query, $format) {
             $query->where("product_type_id", "=", $format);
@@ -87,6 +87,19 @@ class ProductController extends Controller
     {
         if(!is_numeric($id)) return Response::json(["message" => "error"], 400);
         return Product::query()->with(["media_condition", "sleeve_condition", "product_type", "genre"])->find($id);
+    }
+
+    /**
+     * Display the specific resources.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+
+    public function showMultiple(Request $request)
+    {
+        $request->validate(["ids" => "required|array"]);
+        return Product::query()->with(["media_condition", "sleeve_condition", "product_type", "genre"])->findMany($request["ids"]);
     }
 
     /**

@@ -28,10 +28,10 @@ class OpenRequestController extends Controller
     {
         $request->validate([
             "request" => "required|string",
+            "name" => "required|string",
+            "email" => "required|string",
         ]);
-        $user_id = $request->user()->id;
-        $openRequest = ["request" => $request["request"], "user_id" => $user_id];
-        return OpenRequest::create($openRequest);
+        return OpenRequest::create($request->all());
     }
 
     /**

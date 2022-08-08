@@ -23,6 +23,10 @@ class Order extends Model
         'billing_zipcode',
         'session_id',
         'cart_id',
+        'user_id',
+        'payment_type',
+        'comment',
+        'shipping_type',
     ];
 
     public function order_status()
