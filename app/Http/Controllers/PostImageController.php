@@ -38,6 +38,7 @@ class PostImageController extends Controller
         if (!$request->file('image')->isValid()) return Response::json(["message" => "error"], 422);
         
         $path = $request->file('image')->store('images', 's3');
+        Storage::disk("s3")->setVisibility($path, "public");
         $request->request->add(["filename" => $_FILES["image"]["name"], "url" => Storage::disk('s3')->url($path)]);
          return PostImage::create($request->all());
     }

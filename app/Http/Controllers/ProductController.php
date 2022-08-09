@@ -67,6 +67,7 @@ class ProductController extends Controller
             "image" => "mimes:jpg,jpeg,png,webp"
         ]);
         $path = $request->file('image')->store('images', 's3');
+        Storage::disk("s3")->setVisibility($path, "public");
         $arrayElements = ["title", "description","initial_price", "description","sleeve_condition", "media_condition"
         ,"sku","rating", "number_of_ratings", "product_type_id", "stock", "author", "genre_id" , "edition", "discount"];
         $values = [];
