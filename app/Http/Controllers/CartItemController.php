@@ -48,8 +48,8 @@ class CartItemController extends Controller
     {
         return CartItem::query()
             ->where("cart_id", "=", $id)
-            ->with(["products", "products.media_condition", "products.product_type","products.sleeve_condition" ])
-            ->get();
+            ->with(["products", "products.media_condition", "products.product_type","products.sleeve_condition"])
+            ->get(["quantity", "product_id", "price"]);
     }
 
     /**
