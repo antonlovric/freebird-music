@@ -66,14 +66,14 @@ class ProductController extends Controller
             "discount" => "sometimes|nullable|integer",
             "image" => "mimes:jpg,jpeg,png,webp"
         ]);
-        $path = $request->file('image')->store('images', 'public');
+        $path = $request->file('image')->store('images', 's3');
         $arrayElements = ["title", "description","initial_price", "description","sleeve_condition", "media_condition"
         ,"sku","rating", "number_of_ratings", "product_type_id", "stock", "author", "genre_id" , "edition", "discount"];
         $values = [];
         foreach ($arrayElements as $element) {
             $values[$element] = $request[$element];
         }
-         return Product::create([...$values, "filename" => basename($path), "url" => Storage::disk('public')->url($path)]);
+         return Product::create([...$values, "filename" => basename($path), "url" => Storage::disk('s3')->url($path)]);
     }
 
     /**
