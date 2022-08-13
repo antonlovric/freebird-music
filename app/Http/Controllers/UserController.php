@@ -51,8 +51,8 @@ class UserController extends Controller
     {
         $request->validate([
             "session_id" => "exists:users,session_id"
-        ]);
-        return User::query()->with(["orders", "orders.order_status", "orders.cart", "orders.cart.products"])->where("session_id", "=", $request["session_id"])->first();
+        ]); 
+        return User::query()->with(["orders", "orders.order_status"])->where("session_id", "=", $request["session_id"])->first();
     }
 
     /**

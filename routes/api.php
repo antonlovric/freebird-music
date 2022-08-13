@@ -124,9 +124,12 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
     Route::delete("/images/{id}", [ImageController::class, "destroy"]);
 
     // Tags
-    Route::post("/tags", [TagController::class, "store"]);
-    Route::put("/tags/{id}", [TagController::class, "update"]);
-    Route::delete("/tags/{id}", [TagController::class, "destroy"]);
+    Route::controller(TagController::class)->group(function() {
+        Route::get("/tags", "index");
+        Route::post("/tags", "store");
+        Route::put("/tags/{id}", "update");
+        Route::delete("/tags/{id}", "destroy");
+    });
 
     // ProductTypes
     Route::post("/productTypes", [ProductTypeController::class, "store"]);

@@ -11,8 +11,7 @@ class TagController extends Controller
 
     public function index(Request $request)
     {
-        $pageSize = $request->page_size ?? 10;
-        return Tag::query()->paginate($pageSize);
+        return Tag::all(["id", "name"]);
     }
 
     /**

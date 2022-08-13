@@ -63,6 +63,7 @@ class ProductController extends Controller
             "author" => "string",
             "genre_id" => "exists:genres,id",
             "edition" => "string",
+            "tags" => "sometimes|nullable",
             "discount" => "sometimes|nullable|integer",
             "image" => "mimes:jpg,jpeg,png,webp"
         ]);
@@ -74,7 +75,10 @@ class ProductController extends Controller
         foreach ($arrayElements as $element) {
             $values[$element] = $request[$element];
         }
-         return Product::create([...$values, "filename" => basename($path), "url" => Storage::disk('s3')->url($path)]);
+        $new_product = Product::create([...$values, "filename" => basename($path), "url" => Storage::disk('s3')->url($path)]);
+        $tags = $request["tags"];
+        Product::findOrFail($new_product["id"])->tags()->sync($tags);
+        return $new_product;
     }
 
     /**
@@ -112,6 +116,12 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $tags = $request["tags"];
+        $product = Product::find($id);
+        $product->tags()->sync($tags);
+
+        //removing tags to use all() function
+        $request->request->remove("tags");
         return Product::where("id", $id)->update($request->all());
     }
 
