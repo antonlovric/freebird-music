@@ -50,7 +50,6 @@ Route::controller(PostController::class)->group(function () {
     Route::get("/posts", "index");
     Route::get("/posts/latest", "recentPosts");
     Route::get("/posts/{id}", "show");
-    Route::get("/posts/search/{authorID}", "searchAuthor");
 });
 
 Route::controller(DiscountController::class)->group(function () {
@@ -109,9 +108,13 @@ Route::controller(OpenRequestController::class)->group(function () {
     Route::post("/openRequests", "store");
 });
 
+Route::controller(TagController::class)->group(function() {
+    Route::get("/tags", "index");
+});
+
 //Protected routes
 Route::group(["middleware" => ["auth:sanctum"]], function () {
-    // Posts
+
     Route::controller(PostController::class)->group(function() {
         Route::post("/posts", "store");
         Route::put("/posts/{id}", "update");
@@ -125,7 +128,6 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
 
     // Tags
     Route::controller(TagController::class)->group(function() {
-        Route::get("/tags", "index");
         Route::post("/tags", "store");
         Route::put("/tags/{id}", "update");
         Route::delete("/tags/{id}", "destroy");

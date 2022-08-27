@@ -25,6 +25,7 @@ class ProductController extends Controller
         $requestGenre = $request->query("genre");
         $requestMinPrice = $request->query("min_price");
         $requestMaxPrice = $request->query("max_price");
+        $requestTags = $request->query("tags");
 
         return Product::query()->with(["media_condition", "sleeve_condition", "product_type"])->when($requestTitle, function($query, $title) {
             $query->where("title", "LIKE", "%" . $title . "%");
@@ -40,6 +41,10 @@ class ProductController extends Controller
             $query->where("initial_price", ">=", $min_price);
         })->when($requestMaxPrice, function($query, $max_price) {
             $query->where("initial_price", "<=", $max_price);
+        })->when($requestTags, function($query, $tags) {
+            $query->whereHas("tags", function ($q) use ($tags) {
+                $q->whereIn("tag_id", $tags);
+            });
         })->paginate($pageSize);
     }
 

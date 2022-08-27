@@ -17,6 +17,7 @@ class PostController extends Controller
     {
         $pageSize = $request->page_size ?? 10;
         $requestHeading = $request->query("heading");
+
         return Post::with("images")->when($requestHeading, function($query, $heading) {
             $query->where("heading", "LIKE", "%" . $heading . "%");
         })->paginate($pageSize);
@@ -35,6 +36,7 @@ class PostController extends Controller
             "body" => "required|string",
             "session_id" => "required|exists:users,session_id"
         ]);
+
         $user_id = User::query()->where("session_id", "=", $request["session_id"])->first("id")["id"];
         $request->request->remove("session_id");
         $request->request->add(["user_id" => $user_id]);
@@ -62,8 +64,7 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $post = Post::where("id", $id)->update($request->all());
-        return $post;
+        return Post::where("id", $id)->update($request->all());
     }
 
     /**
@@ -75,27 +76,6 @@ class PostController extends Controller
     public function destroy($id)
     {
         return Post::destroy($id);
-    }
-
-    /**
-     * Search for a post title.
-     *
-     * @param  string  $title
-     * @return \Illuminate\Http\Response
-     */
-    public function searchTitle($heading)
-    {
-        return Post::where("heading", "like", "%" . $heading . "%")->get();
-    }
-    /**
-     * Search for a post author.
-     *
-     * @param  string  $title
-     * @return \Illuminate\Http\Response
-     */
-    public function searchAuthor($user)
-    {
-        return Post::where("user_id", "like", "%" . $user . "%")->get();
     }
 
     /**
