@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -19,24 +20,24 @@ class ProductController extends Controller
     {
         $pageSize = $request->page_size ?? 10;
         $requestTitle = $request->query("title");
-        $requestFormat = $request->query("format");
-        $requestMediaCondition = $request->query("media_condition");
-        $requestSleeveCondition = $request->query("sleeve_condition");
-        $requestGenre = $request->query("genre");
+        $requestFormat = json_decode($request->query("format"));
+        $requestMediaCondition = json_decode($request->query("media_condition"));
+        $requestSleeveCondition = json_decode($request->query("sleeve_condition"));
+        $requestGenre = json_decode($request->query("genre"));
         $requestMinPrice = $request->query("min_price");
         $requestMaxPrice = $request->query("max_price");
-        $requestTags = $request->query("tags");
+        $requestTags = json_decode($request->query("tags"));
 
         return Product::query()->with(["media_condition", "sleeve_condition", "product_type"])->when($requestTitle, function($query, $title) {
             $query->where("title", "LIKE", "%" . $title . "%");
         })->when($requestFormat, function($query, $format) {
-            $query->where("product_type_id", "=", $format);
+            $query->whereIn("product_type_id", $format);
         })->when($requestMediaCondition, function($query, $media_condition) {
-            $query->where("media_condition", "=", $media_condition);
+            $query->whereIn("media_condition", $media_condition);
         })->when($requestSleeveCondition, function($query, $sleeve_condition) {
-            $query->where("sleeve_condition", "=", $sleeve_condition);
+            $query->whereIn("sleeve_condition", $sleeve_condition);
         })->when($requestGenre, function($query, $genre) {
-            $query->where("genre_id", "=", $genre);
+            $query->whereIn("genre_id", $genre);
         })->when($requestMinPrice, function($query, $min_price) {
             $query->where("initial_price", ">=", $min_price);
         })->when($requestMaxPrice, function($query, $max_price) {
