@@ -28,7 +28,7 @@ class ProductController extends Controller
         $requestMaxPrice = $request->query("max_price");
         $requestTags = json_decode($request->query("tags"));
 
-        return Product::query()->with(["media_condition", "sleeve_condition", "product_type"])->when($requestTitle, function($query, $title) {
+        return Product::query()->with(["media_condition", "sleeve_condition", "product_type", "tags"])->when($requestTitle, function($query, $title) {
             $query->where("title", "LIKE", "%" . $title . "%");
         })->when($requestFormat, function($query, $format) {
             $query->whereIn("product_type_id", $format);
