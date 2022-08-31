@@ -2,10 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OrderInvoiceMail;
+use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Response;
+use LaravelDaily\Invoices\Invoice;
+use LaravelDaily\Invoices\Classes\Party;
+use LaravelDaily\Invoices\Classes\InvoiceItem;
+
 
 class OrderController extends Controller
 {
@@ -18,6 +25,66 @@ class OrderController extends Controller
     {
         $pageSize = $request->page_size ?? 10;
         return Order::query()->paginate($pageSize);
+    }
+
+    public function sendInvoice($orderId, $orderDetails) {
+        $personalDetails = $orderDetails["personalDetails"];
+        
+        $client = new Party([
+            'name'          => 'Free Bird Music',
+            'phone'         => '01 3821 870',
+            'custom_fields' => [
+                'adresa'        => 'Tratinska 50, 10000 Zagreb, Hrvatska',
+                'IBAN'        => 'HR1723600001101234565',
+                "Model plaćanja" => "HR00",
+                "Poziv na broj" => date("Y") . "-" . $orderId
+            ],
+        ]);
+
+        $customer = new Party([
+            "name" => $personalDetails["firstName"] . " " . $personalDetails["lastName"],
+            "custom_fields" => [
+                "email" => $orderDetails["email"],
+                "telefon" => $orderDetails["phone"],
+                "adresa" => $orderDetails["billing_address"],
+                "grad" =>$orderDetails["billing_city"],
+                "postanski broj" => $orderDetails["billing_zipcode"],
+                "drzava" => $orderDetails["billing_country"],
+            ]
+        ]);
+
+        $items = [];
+
+        if (isset($orderDetails["cart_items"])) {
+            foreach($orderDetails["cart_items"] as $item) {
+                $items[] = (new InvoiceItem())->title($item["title"])->pricePerUnit($item["price"])->quantity($item["quantity"]);
+            }
+        }
+        else {
+            $cart_items = CartItem::query()->with(["products"])->where("cart_id","=", $orderDetails["cart_id"])->get();
+            foreach($cart_items as $item) {
+                $items[] = (new InvoiceItem())->title($item["products"]["title"])->pricePerUnit($item["price"])->quantity($item["quantity"]);
+            }
+        }
+
+        $invoice = Invoice::make("Račun" . " " . $orderId)
+        ->seller($client)
+        ->buyer($customer)
+        ->date(now()->subWeeks(3))
+        ->dateFormat('d/m/Y')
+        ->payUntilDays(14)
+        ->currencyCode('HRK')
+        ->currencyFormat('{VALUE} HRK')
+        ->filename("Racun" . "-" . $orderId)
+        ->addItems($items)
+        ->logo(storage_path("app/public/images/logo.png"))
+        ->save('public');
+
+        $link = $invoice->url();
+        if( Mail::to($orderDetails["email"])->cc(["freebird-music-anton@gmail.com"])->send(new OrderInvoiceMail($orderId, $link)) == null){
+            return response("error while sending invoice", 500);
+        }
+        else return response("invoice successfully sent");
     }
 
     /**
@@ -51,7 +118,9 @@ class OrderController extends Controller
         if ($user_id) $user_id = $user_id["id"];
         $request->request->remove("session_id");
         $request->request->add(["user_id" => $user_id]);
-        return Order::create($request->all());
+        $newOrder = Order::create($request->all());
+        if ($newOrder) return $this->sendInvoice($newOrder["id"], $request->all());
+        return $newOrder;
     }
 
     /**
