@@ -82,7 +82,7 @@
     <body>
         <div class="container">
             <div class="center-container">
-                <img src="https://i.imgur.com/FshxccH.png" alt="FreeBirdMusic logo" />
+                <img src="https://i.imgur.com/de3R3kk.png" alt="FreeBirdMusic logo" />
             </div>
             <h1>Free Bird Music - Račun {{ $order_id }}</h1>
             <p>Poštovanje {{$first_name}} {{$last_name}}U nastavku maila možete pronaći račun za svoju narudžbu.</p>

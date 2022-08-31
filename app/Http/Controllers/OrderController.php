@@ -77,10 +77,12 @@ class OrderController extends Controller
         ->currencyFormat('{VALUE} HRK')
         ->filename("Racun" . "-" . $orderId)
         ->addItems($items)
+        ->logo("https://i.imgur.com/de3R3kk.png")
         ->save('s3');
 
         $link = $invoice->url();
-        if( Mail::to($orderDetails["email"])->cc(["freebird-music-anton@gmail.com"])->send(new OrderInvoiceMail($orderId, $link)) == null){
+        if( Mail::to($orderDetails["email"])->cc(["freebird-music-anton@gmail.com"])
+        ->send(new OrderInvoiceMail($orderId, $link, $personalDetails["firstName"], $personalDetails["lastName"])) == null){
             return response("error while sending invoice", 500);
         }
         else return response("invoice successfully sent");
