@@ -77,7 +77,6 @@ class OrderController extends Controller
         ->currencyFormat('{VALUE} HRK')
         ->filename("Racun" . "-" . $orderId)
         ->addItems($items)
-        ->logo(storage_path("app/public/images/logo.png"))
         ->save('s3');
 
         $link = $invoice->url();
