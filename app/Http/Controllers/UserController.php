@@ -19,17 +19,6 @@ class UserController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -88,5 +77,15 @@ class UserController extends Controller
     {
         $ids = $request->ids;
         return ["response" => User::whereIn("id",$ids)->delete(), "status" => 204];
+    }
+    public function makeAdmin(Request $request)
+    {
+        $ids = $request->ids;
+        return User::whereIn("id",$ids)->update(["user_type_id" => 2]);
+    }
+    public function removeAdmin(Request $request)
+    {
+        $ids = $request->ids;
+        return User::whereIn("id",$ids)->update(["user_type_id" => 1]);
     }
 }

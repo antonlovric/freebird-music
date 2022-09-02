@@ -185,6 +185,8 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
         Route::get("/users/{session_id}", "show");
         Route::put("/users/{session_id}", "update");
         Route::post("/users/deleteUsers", "destroyUsers");
+        Route::post("/users/makeAdmin", "makeAdmin");
+        Route::post("/users/removeAdmin", "removeAdmin");
     });
 
     Route::controller(PostImageController::class)->group(function() {
