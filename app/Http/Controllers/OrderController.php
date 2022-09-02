@@ -153,10 +153,10 @@ class OrderController extends Controller
         for ($i = 0; $i < count($userInfo); $i++) {
             if (!isset ($userInfo[$i]["cart"])) continue;
             if (count($userInfo[$i]["cart"]["products"]) > 0) {
-              for($j = 0; $j < count($userInfo[$i]["cart"]["products"]); $j++) {
-                $products[] = $userInfo[$i]["cart"]["products"][$j];
-              }  
-            } 
+                for($j = 0; $j < count($userInfo[$i]["cart"]["products"]); $j++) {
+                    $products[] = $userInfo[$i]["cart"]["products"][$j];
+                }
+            }
         }
 
         return $products;
