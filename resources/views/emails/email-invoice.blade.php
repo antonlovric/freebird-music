@@ -85,7 +85,7 @@
                 <img src="https://i.imgur.com/de3R3kk.png" alt="FreeBirdMusic logo" />
             </div>
             <h1>Free Bird Music - Račun {{ $order_id }}</h1>
-            <p>Poštovanje {{$first_name}} {{$last_name}}U nastavku maila možete pronaći račun za svoju narudžbu.</p>
+            <p>Poštovanje {{$first_name}} {{$last_name}}! U nastavku maila možete pronaći račun za svoju narudžbu.</p>
             <p>Lijep pozdrav, Free Bird Music tim.</p>
             <a class="invoice-link" href="{{$file_path}}">Račun</a>
         </div>
