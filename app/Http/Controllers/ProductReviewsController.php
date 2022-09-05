@@ -55,7 +55,7 @@ class ProductReviewsController extends Controller
      */
     public function show($id)
     {
-        //
+        return ProductReviews::query()->where("product_id", "=", $id)->with("user")->get();
     }
 
     /**

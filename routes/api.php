@@ -112,6 +112,10 @@ Route::controller(TagController::class)->group(function() {
     Route::get("/tags", "index");
 });
 
+Route::controller(ProductReviewsController::class)->group(function() {
+    Route::get("/productReviews/{id}", "show");
+});
+
 //Protected routes
 Route::group(["middleware" => ["auth:sanctum"]], function () {
 

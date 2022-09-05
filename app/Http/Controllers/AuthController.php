@@ -44,7 +44,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        auth()->user()->tokens()->delete();
+        $request->user()->currentAccessToken()->delete();
         $request->session()->invalidate();
         return ["message" => "Token destroyed", "status" => 204];
     }
