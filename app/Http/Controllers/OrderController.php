@@ -78,7 +78,7 @@ class OrderController extends Controller
         ->filename("Racun" . "-" . $orderId)
         ->addItems($items)
         ->logo("https://i.imgur.com/de3R3kk.png")
-        ->save('s3');
+        ->save('public');
 
         $link = $invoice->url();
         if( Mail::to($orderDetails["email"])->cc(["freebird-music-anton@gmail.com"])

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -73,17 +74,19 @@ class ProductController extends Controller
             "discount" => "sometimes|nullable|integer",
             "image" => "mimes:jpg,jpeg,png,webp"
         ]);
-        $path = $request->file('image')->store('images', 's3');
-        Storage::disk("s3")->setVisibility($path, "public");
+        $path = $request->file('image')->store('images', 'public');
+        Storage::disk("public")->setVisibility($path, "public");
         $arrayElements = ["title", "description","initial_price", "description","sleeve_condition", "media_condition"
         ,"sku","rating", "number_of_ratings", "product_type_id", "stock", "author", "genre_id" , "edition", "discount"];
         $values = [];
         foreach ($arrayElements as $element) {
             $values[$element] = $request[$element];
         }
-        $new_product = Product::create([...$values, "filename" => basename($path), "url" => Storage::disk('s3')->url($path)]);
         $tags = $request["tags"];
+        DB::beginTransaction();
+        $new_product = Product::create([...$values, "filename" => basename($path), "url" => Storage::disk('public')->url($path)]);
         Product::findOrFail($new_product["id"])->tags()->sync($tags);
+        DB::commit();
         return $new_product;
     }
 
