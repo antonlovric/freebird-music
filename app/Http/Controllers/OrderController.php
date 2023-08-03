@@ -7,8 +7,8 @@ use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Response;
 use LaravelDaily\Invoices\Invoice;
 use LaravelDaily\Invoices\Classes\Party;
 use LaravelDaily\Invoices\Classes\InvoiceItem;
@@ -77,7 +77,7 @@ class OrderController extends Controller
         ->currencyFormat('{VALUE} HRK')
         ->filename("Racun" . "-" . $orderId)
         ->addItems($items)
-        ->logo("https://i.imgur.com/de3R3kk.png")
+        ->logo(public_path("storage/images/logo.png"))
         ->save('public');
 
         $link = $invoice->url();
@@ -119,8 +119,10 @@ class OrderController extends Controller
         if ($user_id) $user_id = $user_id["id"];
         $request->request->remove("session_id");
         $request->request->add(["user_id" => $user_id]);
+        DB::beginTransaction();
         $newOrder = Order::create($request->all());
         if ($newOrder) return $this->sendInvoice($newOrder["id"], $request->all());
+        DB::commit();
         return $newOrder;
     }
 
@@ -152,8 +154,15 @@ class OrderController extends Controller
         $userInfo = Order::with(["cart", "cart.products"])->where("user_id", "=", $user_id)->get();
         for ($i = 0; $i < count($userInfo); $i++) {
             if (!isset ($userInfo[$i]["cart"])) continue;
-            if (count($userInfo[$i]["cart"]["products"]) > 0) {
-                for($j = 0; $j < count($userInfo[$i]["cart"]["products"]); $j++) {
+            for($j = 0; $j < count($userInfo[$i]["cart"]["products"]); $j++) {
+                $new_product = $userInfo[$i]["cart"]["products"][$j];
+                $product_exists = false;
+                foreach($products as $index => $product) {
+                    if ($product["id"] === $new_product["id"]) {
+                        $product_exists = true;
+                    }
+                }
+                if (!$product_exists){
                     $products[] = $userInfo[$i]["cart"]["products"][$j];
                 }
             }
