@@ -6,6 +6,7 @@ use App\Mail\OrderInvoiceMail;
 use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -110,7 +111,6 @@ class OrderController extends Controller
             "billing_zipcode" => "string",
             "shipping_zipcode" => "string",
             "session_id" => "nullable|sometimes|exists:users,session_id",
-            "cart_id" => "nullable|sometimes|exists:carts,id",
             "comment" => "nullable|string",
             "payment_type" => "string",
             "shipping_type" => "string",
@@ -119,10 +119,14 @@ class OrderController extends Controller
         if ($user_id) $user_id = $user_id["id"];
         $request->request->remove("session_id");
         $request->request->add(["user_id" => $user_id]);
-        DB::beginTransaction();
-        $newOrder = Order::create($request->all());
-        if ($newOrder) return $this->sendInvoice($newOrder["id"], $request->all());
-        DB::commit();
+        try {
+            DB::beginTransaction();
+            $newOrder = Order::create($request->all());
+            if ($newOrder) return $this->sendInvoice($newOrder["id"], $request->all());
+            DB::commit();
+        } catch (Exception $e) {
+            return response($e->getMessage(), 400);
+        }
         return $newOrder;
     }
 
